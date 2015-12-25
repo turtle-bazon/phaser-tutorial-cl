@@ -1,0 +1,6 @@
+;;;; -*- mode: lisp -*-
+
+(in-package :phaser)
+
+(defun hz ()
+  (+ 2 1))
