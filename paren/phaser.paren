@@ -2,5 +2,5 @@
 
 (in-package :phaser)
 
-(defun hz ()
-  (+ 2 1))
+(defmacro load-image (game name uri)
+  `(chain ,game load (image ,name ,uri)))

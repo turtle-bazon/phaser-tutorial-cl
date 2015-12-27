@@ -2,6 +2,8 @@
 
 (in-package :phaser-tutorial-cl)
 
+(setf (chain window onload) init)
+
 (defvar *platforms* nil)
 
 (defvar *player* nil)
@@ -14,11 +16,14 @@
 
 (defvar *score-text* nil)
 
+(defmacro load-image (game name uri)
+  `(chain ,game load (image ,name ,uri)))
+
 (defun init ()
   (defun preload-fn ()
-    (chain game load (image "sky" "assets/sky.png"))
-    (chain game load (image "ground" "assets/platform.png"))
-    (chain game load (image "star" "assets/star.png"))
+    (load-image game "sky" "assets/sky.png")
+    (load-image game "ground" "assets/platform.png")
+    (load-image game "star" "assets/star.png")
     (chain game load (spritesheet "dude" "assets/dude.png" 32 48))
     nil)
   (defun create-fn ()
@@ -27,13 +32,12 @@
     (setf *platforms* (chain game add (group)))
     (setf (chain *platforms* enable-body) t)
     (let ((ground (chain *platforms* (create 0 (- (chain game world height) 64) "ground")))
-          (ledge nil))
+          (ledge1 (chain *platforms* (create 400 400 "ground")))
+          (ledge2 (chain *platforms* (create -150 250 "ground"))))
       (chain ground scale (set-to 2 2))
       (setf (chain ground body immovable) t)
-      (setf ledge (chain *platforms* (create 400 400 "ground")))
-      (setf (chain ledge body immovable) t)
-      (setf ledge (chain *platforms* (create -150 250 "ground")))
-      (setf (chain ledge body immovable) t)
+      (setf (chain ledge1 body immovable) t)
+      (setf (chain ledge2 body immovable) t)
       (setf *player* (chain game add (sprite 32 (- (chain game world height) 150) "dude")))
       (chain game physics arcade (enable *player*))
       (setf (chain *player* body bounce y) 0.2)
@@ -76,5 +80,3 @@
                                          "game" (create preload preload-fn
                                                         create create-fn
                                                         update update-fn))))))))
-
-(setf (chain window onload) init)

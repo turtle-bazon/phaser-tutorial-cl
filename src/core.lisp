@@ -2,6 +2,13 @@
 
 (in-package #:phaser-tutorial-cl)
 
+(defun slurp (file)
+  (with-open-file (s file)
+    (loop
+       for line = (read-line s nil 'eof)
+       until (eq line 'eof)
+       collect line)))
+
 (defun compile-parens ()
   (let ((sources '("paren/phaser.paren" "public/js/phaser.cl.js"
                    "paren/phaser-tutorial-cl.paren" "public/js/main.js")))
